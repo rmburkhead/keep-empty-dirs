@@ -52,7 +52,7 @@ def main():
 
     for pathitem in opts.pathlist:
         for root, dirs, files in os.walk(pathitem):
-            if (not opts.remove) and (not files):
+            if (not opts.remove) and (not files) and (not dirs):
                 fn = os.path.join(root, opts.filename)
                 print(actionDesc, fn)
                 open(fn, 'w')
