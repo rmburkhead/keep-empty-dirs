@@ -9,6 +9,11 @@ For help and usage information specify the `--help` option on the command line:
 
     keep-empty-dirs.py --help
 
+Compatibility
+-------------
+
+Tested on Python version 3.3.2 (Windows). Your mileage may vary.
+
 License and Copyright
 ---------------------
 
