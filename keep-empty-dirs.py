@@ -20,18 +20,24 @@ retain empty directories (e.g., Mecurial, Git).
 
 import os
 
+class DefaultValues:
+    filename = '.keep'
+    pathlist = ['.']
+
 def main():
     import argparse
+
+    defaultValues = DefaultValues()
 
     parser = argparse.ArgumentParser(description=__doc__.strip())
 
     parser.add_argument('-f', '--filename', action='store', dest='filename',
-                      default='.keep',
-                      help="Name of the file to create. (Default: .keep)")
+                      default=defaultValues.filename,
+                      help="Name of the file to create. (Default: "+defaultValues.filename+")")
 
     parser.add_argument('pathlist', action='store',
                       nargs='*',
-                      default=['.'],
+                      default=defaultValues.pathlist,
                       help="One or more directory paths on which to act. (Default: act on the current directory)")
 
     opts = parser.parse_args()
