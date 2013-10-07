@@ -23,6 +23,7 @@ import os
 class DefaultValues:
     filename = '.keep'
     dryrun = False
+    skipdir = '.git:.svn:CVS'
     remove = False
     pathlist = ['.']
 
@@ -39,6 +40,9 @@ def main():
     parser.add_argument('-n', '--dryrun', action='store_true', dest='dryrun',
                       default=defaultValues.dryrun,
                       help="Perform a dry run (don't create or remove the file). If not specified, then the file is created (or removed if the --remove option is specified).")
+    parser.add_argument('-s', '--skipdir', action='store', dest='skipdir',
+                      default=defaultValues.skipdir,
+                      help="A list of one or more directories to skip, separated by colons (e.g. \"-s .git:.svn:CVS\"). (Default: "+defaultValues.skipdir+")")
     parser.add_argument('-r', '--remove', action='store_true', dest='remove',
                       default=defaultValues.remove,
                       help="Remove the file instead of creating it. If not specified, then the file is created.")
@@ -49,7 +53,10 @@ def main():
 
     opts = parser.parse_args()
 
+    skipdir = opts.skipdir.split(':')
+
     actionsAttempted=0
+    dirsIgnored=0
 
     if (opts.remove):
         if (opts.dryrun):
@@ -69,6 +76,12 @@ def main():
     for pathitem in opts.pathlist:
         if (os.path.isdir(pathitem)):
             for root, dirs, files in os.walk(pathitem):
+                for thisskipdir in skipdir:
+                    if thisskipdir in dirs:
+                        dirs.remove(thisskipdir)
+                        dirsIgnored += 1
+                        print("Ignoring: " + os.path.join(root, thisskipdir))
+
                 if (not opts.remove) and (not files) and (not dirs):
                     fn = os.path.join(root, opts.filename)
                     print(actionDesc, fn)
@@ -85,6 +98,7 @@ def main():
 
             print()
             print('Starting path:', os.path.abspath(pathitem))
+            print('Directories ignored: ', dirsIgnored)
             print(actionSummary, actionsAttempted)
 
         else:
