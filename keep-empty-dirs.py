@@ -49,30 +49,42 @@ def main():
 
     opts = parser.parse_args()
 
+    actionsAttempted=0
+
     if (opts.remove):
         if (opts.dryrun):
             actionDesc = 'Would Remove: '
+            actionSummary = 'Files to remove: '
         else:
             actionDesc = 'Remove: '
+            actionSummary = 'Files removed: '
     else:
         if (opts.dryrun):
             actionDesc = 'Would Create: '
+            actionSummary = 'Files to create: '
         else:
             actionDesc = 'Create: '
+            actionSummary = 'Files created: '
 
     for pathitem in opts.pathlist:
         for root, dirs, files in os.walk(pathitem):
             if (not opts.remove) and (not files) and (not dirs):
                 fn = os.path.join(root, opts.filename)
                 print(actionDesc, fn)
+                actionsAttempted += 1
                 if not opts.dryrun:
                     open(fn, 'w')
 
             elif opts.remove and (opts.filename in files):
                 fn = os.path.join(root, opts.filename)
                 print(actionDesc, fn)
+                actionsAttempted += 1
                 if not opts.dryrun:
                     os.remove(fn)
+
+        print()
+        print('Starting path:', os.path.abspath(pathitem))
+        print(actionSummary, actionsAttempted)
 
 if __name__ == '__main__':
     main()
