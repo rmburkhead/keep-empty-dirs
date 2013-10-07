@@ -18,9 +18,10 @@ used to insure the directories are added to a version control repository that do
 retain empty directories (e.g., Mecurial, Git).
 """
 
-import os
+import os, sys
 
 class DefaultValues:
+    showVersion = False
     filename = '.keep'
     dryrun = False
     verbose = False
@@ -33,10 +34,15 @@ class DefaultValues:
 def main():
     import argparse
 
+    versionString = 'keep-empty-dirs.py 1.0.0'
+
     defaultValues = DefaultValues()
 
     parser = argparse.ArgumentParser(description=__doc__.strip())
 
+    parser.add_argument('--version', action='store_true', dest='showVersion',
+                      default=defaultValues.showVersion,
+                      help="Print the script version information.")
     parser.add_argument('-f', '--filename', action='store', dest='filename',
                       default=defaultValues.filename,
                       help="Name of the file to create. (Default: "+defaultValues.filename+")")
@@ -64,6 +70,10 @@ def main():
                       help="One or more directory paths on which to act. (Default: act on the current directory)")
 
     opts = parser.parse_args()
+
+    if opts.showVersion:
+        print(versionString)
+        sys.exit()
 
     skipdir = opts.skipdir.split(':')
 
@@ -97,37 +107,38 @@ def main():
     if pathitemError:
         print()
         parser.print_help()
-    else:
-        for pathitem in opts.pathlist:
-            for root, dirs, files in os.walk(pathitem):
-                if (opts.verbose | opts.verbosecheck):
-                    print("Checking: " + root)
+        sys.exit()
 
-                for thisskipdir in skipdir:
-                    if thisskipdir in dirs:
-                        dirs.remove(thisskipdir)
-                        dirsIgnored += 1
-                        if (opts.verbose | opts.verboseignore):
-                            print("Ignoring: " + os.path.join(root, thisskipdir))
+    for pathitem in opts.pathlist:
+        for root, dirs, files in os.walk(pathitem):
+            if (opts.verbose | opts.verbosecheck):
+                print("Checking: " + root)
 
-                if (not opts.remove) and (not files) and (not dirs):
-                    fn = os.path.join(root, opts.filename)
-                    print(actionDesc, fn)
-                    actionsAttempted += 1
-                    if not opts.dryrun:
-                        open(fn, 'w')
+            for thisskipdir in skipdir:
+                if thisskipdir in dirs:
+                    dirs.remove(thisskipdir)
+                    dirsIgnored += 1
+                    if (opts.verbose | opts.verboseignore):
+                        print("Ignoring: " + os.path.join(root, thisskipdir))
 
-                elif opts.remove and (opts.filename in files):
-                    fn = os.path.join(root, opts.filename)
-                    print(actionDesc, fn)
-                    actionsAttempted += 1
-                    if not opts.dryrun:
-                        os.remove(fn)
+            if (not opts.remove) and (not files) and (not dirs):
+                fn = os.path.join(root, opts.filename)
+                print(actionDesc, fn)
+                actionsAttempted += 1
+                if not opts.dryrun:
+                    open(fn, 'w')
 
-            print()
-            print('Starting path:', os.path.abspath(pathitem))
-            print('Directories ignored: ', dirsIgnored)
-            print(actionSummary, actionsAttempted)
+            elif opts.remove and (opts.filename in files):
+                fn = os.path.join(root, opts.filename)
+                print(actionDesc, fn)
+                actionsAttempted += 1
+                if not opts.dryrun:
+                    os.remove(fn)
+
+        print()
+        print('Starting path:', os.path.abspath(pathitem))
+        print('Directories ignored: ', dirsIgnored)
+        print(actionSummary, actionsAttempted)
 
 if __name__ == '__main__':
     main()
