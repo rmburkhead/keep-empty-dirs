@@ -67,24 +67,32 @@ def main():
             actionSummary = 'Files created: '
 
     for pathitem in opts.pathlist:
-        for root, dirs, files in os.walk(pathitem):
-            if (not opts.remove) and (not files) and (not dirs):
-                fn = os.path.join(root, opts.filename)
-                print(actionDesc, fn)
-                actionsAttempted += 1
-                if not opts.dryrun:
-                    open(fn, 'w')
+        if (os.path.isdir(pathitem)):
+            for root, dirs, files in os.walk(pathitem):
+                if (not opts.remove) and (not files) and (not dirs):
+                    fn = os.path.join(root, opts.filename)
+                    print(actionDesc, fn)
+                    actionsAttempted += 1
+                    if not opts.dryrun:
+                        open(fn, 'w')
 
-            elif opts.remove and (opts.filename in files):
-                fn = os.path.join(root, opts.filename)
-                print(actionDesc, fn)
-                actionsAttempted += 1
-                if not opts.dryrun:
-                    os.remove(fn)
+                elif opts.remove and (opts.filename in files):
+                    fn = os.path.join(root, opts.filename)
+                    print(actionDesc, fn)
+                    actionsAttempted += 1
+                    if not opts.dryrun:
+                        os.remove(fn)
 
-        print()
-        print('Starting path:', os.path.abspath(pathitem))
-        print(actionSummary, actionsAttempted)
+            print()
+            print('Starting path:', os.path.abspath(pathitem))
+            print(actionSummary, actionsAttempted)
+
+        else:
+            if (not os.path.exists(pathitem)):
+                print('\nERROR: The specified directory name does not exist: "'+pathitem+'"\n')
+            else:
+                print('\nERROR: The path specified is not a directory (possibly a file?): "'+pathitem+'"\n')
+            parser.print_help()
 
 if __name__ == '__main__':
     main()
