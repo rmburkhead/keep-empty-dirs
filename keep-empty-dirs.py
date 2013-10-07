@@ -6,33 +6,41 @@
 # GPL Modification Notice:
 # This program is modified, beginning in October 2013, from the original. See the accompanying README.md file for information on,
 # and access to the original author and source.
+#
+# Compatibility:
+# This script has been tested with Python 3.3.2. Your mileage may vary.
 
 """
-Recurse through the given directories, find the empty subdirectories and add a
-.keep file in each. This is used to mark all existing empty subdirectories in a
-hierarchy to be kept from deletion, or for the sentinels to be used to insure
-the directories are added to a Mercurial repository.
+This script recurses through the given directories (or the current directory, by default),
+finds the empty subdirectories, and adds a file in each. This is used to mark all existing
+empty subdirectories in a hierarchy to be kept from deletion, or for the sentinels to be
+used to insure the directories are added to a version control repository that does not normally
+retain empty directories (e.g., Mecurial, Git).
 """
 
 import os
-from os.path import join
-
 
 def main():
-    import optparse
-    parser = optparse.OptionParser(__doc__.strip())
+    import argparse
 
-    parser.add_option('-f', '--filename', action='store',
+    parser = argparse.ArgumentParser(description=__doc__.strip())
+
+    parser.add_argument('-f', '--filename', action='store', dest='filename',
                       default='.keep',
-                      help="Default name of file to create.")
+                      help="Name of the file to create. (Default: .keep)")
 
-    opts, args = parser.parse_args()
+    parser.add_argument('pathlist', action='store',
+                      nargs='*',
+                      default=['.'],
+                      help="One or more directory paths on which to act. (Default: act on the current directory)")
 
-    for arg in args:
-        for root, dirs, files in os.walk(arg):
+    opts = parser.parse_args()
+
+    for pathitem in opts.pathlist:
+        for root, dirs, files in os.walk(pathitem):
             if not files:
-                fn =join(root, opts.filename)
-                print fn
+                fn = os.path.join(root, opts.filename)
+                print(fn)
                 open(fn, 'w')
 
 if __name__ == '__main__':
