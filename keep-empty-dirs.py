@@ -22,6 +22,7 @@ import os
 
 class DefaultValues:
     filename = '.keep'
+    remove = False
     pathlist = ['.']
 
 def main():
@@ -34,7 +35,9 @@ def main():
     parser.add_argument('-f', '--filename', action='store', dest='filename',
                       default=defaultValues.filename,
                       help="Name of the file to create. (Default: "+defaultValues.filename+")")
-
+    parser.add_argument('-r', '--remove', action='store_true', dest='remove',
+                      default=defaultValues.remove,
+                      help="Remove the file instead of creating it. If not specified, then the file is created.")
     parser.add_argument('pathlist', action='store',
                       nargs='*',
                       default=defaultValues.pathlist,
@@ -42,12 +45,22 @@ def main():
 
     opts = parser.parse_args()
 
+    if (opts.remove):
+        actionDesc = 'Remove: '
+    else:
+        actionDesc = 'Create: '
+
     for pathitem in opts.pathlist:
         for root, dirs, files in os.walk(pathitem):
-            if not files:
+            if (not opts.remove) and (not files):
                 fn = os.path.join(root, opts.filename)
-                print(fn)
+                print(actionDesc, fn)
                 open(fn, 'w')
+
+            elif opts.remove and (opts.filename in files):
+                fn = os.path.join(root, opts.filename)
+                print(actionDesc, fn)
+                os.remove(fn)
 
 if __name__ == '__main__':
     main()
