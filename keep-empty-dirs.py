@@ -23,6 +23,9 @@ import os
 class DefaultValues:
     filename = '.keep'
     dryrun = False
+    verbose = False
+    verbosecheck = False
+    verboseignore = False
     skipdir = '.git:.svn:CVS'
     remove = False
     pathlist = ['.']
@@ -46,6 +49,15 @@ def main():
     parser.add_argument('-r', '--remove', action='store_true', dest='remove',
                       default=defaultValues.remove,
                       help="Remove the file instead of creating it. If not specified, then the file is created.")
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
+                      default=defaultValues.verbose,
+                      help="Print information about directories being inspected, and possibly additional information.")
+    parser.add_argument('-vc', '--verbose-check', action='store_true', dest='verbosecheck',
+                      default=defaultValues.verbosecheck,
+                      help="Print the name of the directory being checked. If the --verbose option is specified then this information is also printed.")
+    parser.add_argument('-vi', '--verbose-ignore', action='store_true', dest='verboseignore',
+                      default=defaultValues.verboseignore,
+                      help="Print the name of the directory being ignored. If the --verbose option is specified, then this information is also printed.")
     parser.add_argument('pathlist', action='store',
                       nargs='*',
                       default=defaultValues.pathlist,
@@ -76,11 +88,15 @@ def main():
     for pathitem in opts.pathlist:
         if (os.path.isdir(pathitem)):
             for root, dirs, files in os.walk(pathitem):
+                if (opts.verbose | opts.verbosecheck):
+                    print("Checking: " + root)
+
                 for thisskipdir in skipdir:
                     if thisskipdir in dirs:
                         dirs.remove(thisskipdir)
                         dirsIgnored += 1
-                        print("Ignoring: " + os.path.join(root, thisskipdir))
+                        if (opts.verbose | opts.verboseignore):
+                            print("Ignoring: " + os.path.join(root, thisskipdir))
 
                 if (not opts.remove) and (not files) and (not dirs):
                     fn = os.path.join(root, opts.filename)
