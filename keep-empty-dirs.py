@@ -69,6 +69,7 @@ def main():
 
     actionsAttempted=0
     dirsIgnored=0
+    pathitemError = False
 
     if (opts.remove):
         if (opts.dryrun):
@@ -86,7 +87,18 @@ def main():
             actionSummary = 'Files created: '
 
     for pathitem in opts.pathlist:
-        if (os.path.isdir(pathitem)):
+        if (not os.path.exists(pathitem)):
+            print('\nERROR: The specified directory name does not exist: "'+pathitem+'"')
+            pathitemError = True
+        elif (not os.path.isdir(pathitem)):
+            print('\nERROR: The path specified is not a directory (possibly a file?): "'+pathitem+'"')
+            pathitemError = True
+
+    if pathitemError:
+        print()
+        parser.print_help()
+    else:
+        for pathitem in opts.pathlist:
             for root, dirs, files in os.walk(pathitem):
                 if (opts.verbose | opts.verbosecheck):
                     print("Checking: " + root)
@@ -116,13 +128,6 @@ def main():
             print('Starting path:', os.path.abspath(pathitem))
             print('Directories ignored: ', dirsIgnored)
             print(actionSummary, actionsAttempted)
-
-        else:
-            if (not os.path.exists(pathitem)):
-                print('\nERROR: The specified directory name does not exist: "'+pathitem+'"\n')
-            else:
-                print('\nERROR: The path specified is not a directory (possibly a file?): "'+pathitem+'"\n')
-            parser.print_help()
 
 if __name__ == '__main__':
     main()
