@@ -26,7 +26,7 @@ class DefaultValues:
     verbose = False
     verbosecheck = False
     verboseignore = False
-    skipdir = '.git:.svn:CVS'
+    skipdir = 'CVS:.git:.hg:.svn'
     remove = False
     pathlist = ['.']
 
