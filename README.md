@@ -10,7 +10,7 @@ For help and usage information specify the `--help` option on the command line:
     keep-empty-dirs.py --help
 
 License and Copyright
-=====================
+---------------------
 
 In accordance with the original author's licensing, this is licensed under the [GNU General Public License v2 (GPL v2)](http://www.gnu.org/licenses/gpl-2.0.html). Please see the referenced web page, or the `LICENSE` file contained in this repostiory.
 
@@ -18,7 +18,7 @@ This work is Copyright &copy; Robert M Burkhead, 2013.
 Portions of this work are Copyright &copy; Martin Blais, 2001-2008.
 
 GPL v2 Modification Notice
-==========================
+--------------------------
 
 The script found in this repository has been **MODIFIED** from the original, begining in October 2013, by Robert Burkhead.
 
