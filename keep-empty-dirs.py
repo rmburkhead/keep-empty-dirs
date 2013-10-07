@@ -22,6 +22,7 @@ import os
 
 class DefaultValues:
     filename = '.keep'
+    dryrun = False
     remove = False
     pathlist = ['.']
 
@@ -35,6 +36,9 @@ def main():
     parser.add_argument('-f', '--filename', action='store', dest='filename',
                       default=defaultValues.filename,
                       help="Name of the file to create. (Default: "+defaultValues.filename+")")
+    parser.add_argument('-n', '--dryrun', action='store_true', dest='dryrun',
+                      default=defaultValues.dryrun,
+                      help="Perform a dry run (don't create or remove the file). If not specified, then the file is created (or removed if the --remove option is specified).")
     parser.add_argument('-r', '--remove', action='store_true', dest='remove',
                       default=defaultValues.remove,
                       help="Remove the file instead of creating it. If not specified, then the file is created.")
@@ -46,21 +50,29 @@ def main():
     opts = parser.parse_args()
 
     if (opts.remove):
-        actionDesc = 'Remove: '
+        if (opts.dryrun):
+            actionDesc = 'Would Remove: '
+        else:
+            actionDesc = 'Remove: '
     else:
-        actionDesc = 'Create: '
+        if (opts.dryrun):
+            actionDesc = 'Would Create: '
+        else:
+            actionDesc = 'Create: '
 
     for pathitem in opts.pathlist:
         for root, dirs, files in os.walk(pathitem):
             if (not opts.remove) and (not files) and (not dirs):
                 fn = os.path.join(root, opts.filename)
                 print(actionDesc, fn)
-                open(fn, 'w')
+                if not opts.dryrun:
+                    open(fn, 'w')
 
             elif opts.remove and (opts.filename in files):
                 fn = os.path.join(root, opts.filename)
                 print(actionDesc, fn)
-                os.remove(fn)
+                if not opts.dryrun:
+                    os.remove(fn)
 
 if __name__ == '__main__':
     main()
