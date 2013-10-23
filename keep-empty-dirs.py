@@ -23,7 +23,7 @@ import os, sys, platform
 def version_check():
     python_version = platform.python_version_tuple()
     if (python_version[0] != 2) or ((python_version[0] == 2) and (python_version[1] < 6)):
-        print("This script requires Python 2 version 2.6 or greater. If you are running Python 3, then use version 2.x.x of this script.")
+        print "This script requires Python 2 version 2.6 or greater. If you are running Python 3, then use version 2.x.x of this script."
         sys.exit(1)
 
 class DefaultValues:
@@ -78,7 +78,7 @@ def main():
     opts = parser.parse_args()
 
     if opts.showVersion:
-        print(versionString)
+        print versionString
         sys.exit()
 
     skipdir = opts.skipdir.split(':')
@@ -104,47 +104,47 @@ def main():
 
     for pathitem in opts.pathlist:
         if (not os.path.exists(pathitem)):
-            print('\nERROR: The specified directory name does not exist: "'+pathitem+'"')
+            print '\nERROR: The specified directory name does not exist: "'+pathitem+'"'
             pathitemError = True
         elif (not os.path.isdir(pathitem)):
-            print('\nERROR: The path specified is not a directory (possibly a file?): "'+pathitem+'"')
+            print '\nERROR: The path specified is not a directory (possibly a file?): "'+pathitem+'"'
             pathitemError = True
 
     if pathitemError:
-        print()
+        print
         parser.print_help()
         sys.exit()
 
     for pathitem in opts.pathlist:
         for root, dirs, files in os.walk(pathitem):
             if (opts.verbose | opts.verbosecheck):
-                print("Checking: " + root)
+                print "Checking: " + root
 
             for thisskipdir in skipdir:
                 if thisskipdir in dirs:
                     dirs.remove(thisskipdir)
                     dirsIgnored += 1
                     if (opts.verbose | opts.verboseignore):
-                        print("Ignoring: " + os.path.join(root, thisskipdir))
+                        print "Ignoring: " + os.path.join(root, thisskipdir)
 
             if (not opts.remove) and (not files) and (not dirs):
                 fn = os.path.join(root, opts.filename)
-                print(actionDesc, fn)
+                print actionDesc, fn
                 actionsAttempted += 1
                 if not opts.dryrun:
                     open(fn, 'w')
 
             elif opts.remove and (opts.filename in files):
                 fn = os.path.join(root, opts.filename)
-                print(actionDesc, fn)
+                print actionDesc, fn
                 actionsAttempted += 1
                 if not opts.dryrun:
                     os.remove(fn)
 
-        print()
-        print('Starting path:', os.path.abspath(pathitem))
-        print('Directories ignored: ', dirsIgnored)
-        print(actionSummary, actionsAttempted)
+        print
+        print 'Starting path:', os.path.abspath(pathitem)
+        print 'Directories ignored: ', dirsIgnored
+        print actionSummary, actionsAttempted
 
 if __name__ == '__main__':
     version_check()
