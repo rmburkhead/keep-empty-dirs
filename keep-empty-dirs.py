@@ -18,7 +18,13 @@ used to insure the directories are added to a version control repository that do
 retain empty directories (e.g., Mecurial, Git).
 """
 
-import os, sys
+import os, sys, platform
+
+def version_check():
+    python_version = platform.python_version_tuple()
+    if (python_version[0] != '3'):
+        print("This script requires Python 3. If you are running Python 2, then use version 1.1.x  (or greater) of this script.")
+        sys.exit(1)
 
 class DefaultValues:
     showVersion = False
@@ -141,4 +147,5 @@ def main():
         print(actionSummary, actionsAttempted)
 
 if __name__ == '__main__':
+    version_check()
     main()
