@@ -37,7 +37,7 @@ class DefaultValues:
 def main():
     import argparse
 
-    versionString = 'keep-empty-dirs.py 1.0.0'
+    versionString = 'keep-empty-dirs.py 2.0.0'
 
     defaultValues = DefaultValues()
 
