@@ -12,7 +12,11 @@ For help and usage information specify the `--help` option on the command line:
 Compatibility
 -------------
 
-Tested on Python version 3.3.2 (Windows). Your mileage may vary.
+Version 1.x of this script is compatible with Python 2 version 2.6 or greater. Tested on Python version 2.7.5 (Linux).
+
+Version 2.x of this script is compatible with Python 3. Tested on Python version 3.3.2 (Windows).
+
+Your mileage may vary.
 
 License and Copyright
 ---------------------
