@@ -22,7 +22,7 @@ import os, sys, platform
 
 def version_check():
     python_version = platform.python_version_tuple()
-    if (python_version[0] != 2) or ((python_version[0] == 2) and (python_version[1] < 6)):
+    if (python_version[0] != '2') or ((python_version[0] == '2') and (python_version[1] < '6')):
         print "This script requires Python 2 version 2.6 or greater. If you are running Python 3, then use version 2.x.x of this script."
         sys.exit(1)
 
