@@ -6,9 +6,6 @@
 # GPL Modification Notice:
 # This program is modified, beginning in October 2013, from the original. See the accompanying README.md file for information on,
 # and access to the original author and source.
-#
-# Compatibility:
-# This script has been tested with Python 3.3.2. Your mileage may vary.
 
 """
 This script recurses through the given directories (or the current directory, by default),
